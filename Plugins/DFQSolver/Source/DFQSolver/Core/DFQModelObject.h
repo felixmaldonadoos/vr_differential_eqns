@@ -39,7 +39,7 @@ public:
 	};
 
 	UFUNCTION()
-	virtual void InitializeModelData(const float dt = 0.01) {
+	virtual void InitializeModelData(const float dt = 0.005) {
 		UE_LOG(LogTemp, Log, TEXT("[DFQModelObject::InitializeModelData] dt: %f"), dt)
 		ModelData = FModelData();
 		ModelData.frame = 0;
@@ -48,7 +48,7 @@ public:
 	}
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float fs_broadcast = 100;
+	float fs_broadcast = 120;
 	float dt_broadcast = 1/fs_broadcast;
 
 	UFUNCTION()

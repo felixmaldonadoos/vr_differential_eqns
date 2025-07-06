@@ -1,6 +1,4 @@
-﻿
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -27,12 +25,14 @@ public:
 	UFUNCTION()
 	virtual void OnStepReceived(FModelData InModelData) override {
 		Super::OnStepReceived(InModelData);
-		if (InModelData.frame % 10 != 0) return; // Skip rendering some steps
-		UE_LOG(LogTemp, Log, TEXT("[AAizawaAttractorActor::OnStepReceived] Received: (%0.2f, %0.2f, %0.2f)"),
-			InModelData.GetParam("px", -1),
-			InModelData.GetParam("py", -1),
-			InModelData.GetParam("pz", -1));
-		// spawn here
+		//if (InModelData.frame % 10 != 0) return; // Skip rendering some steps
+		//UE_LOG(LogTemp, Log, TEXT("[AAizawaAttractorActor::OnStepReceived] Received: (%0.2f, %0.2f, %0.2f)"),
+		//	InModelData.GetParam("px", -1),
+		//	InModelData.GetParam("py", -1),
+		//	InModelData.GetParam("pz", -1));
+
+		//// spawn here
+		//
 		FVector PosTemp;
 		PosTemp.X = InModelData.GetParam("px", -1);
 		PosTemp.Y = InModelData.GetParam("py", -1);
@@ -40,20 +40,29 @@ public:
 		PosTemp *= 1000; // scale up 
 		PosTemp = GetActorLocation() + PosTemp;
 
-		float Time = InModelData.t;
-		uint8 Hue = static_cast<uint8>(FMath::Fmod(Time * 20.0f, 256));
-		FLinearColor LinearHSVColor = FLinearColor::MakeFromHSV8(Hue, 255, 255);
-		FColor SphereColor = LinearHSVColor.ToFColor(true); // 'true' = sRGB
+		const float Time = InModelData.t;
+		const uint8 Hue = static_cast<uint8>(FMath::Fmod(Time * 20.0f, 256));
+		const FLinearColor LinearHSVColor = FLinearColor::MakeFromHSV8(Hue, 255, 255);
+		const FColor SphereColor = LinearHSVColor.ToFColor(true); // 'true' = sRGB
 
-		DrawDebugSphere(
-			GetWorld(),
-			PosTemp,
-			2.5f,              // Radius
-			3,                 // Segments
-			SphereColor,
-			true,             // Persistent lines?
-			20.0f              // Lifetime in seconds
-		);
+		//DrawDebugSphere(
+		//	GetWorld(),
+		//	PosTemp,
+		//	2.5f,              // Radius
+		//	3,                 // Segments
+		//	SphereColor,
+		//	true,             // Persistent lines?
+		//	20.0f              // Lifetime in seconds
+		//);
+		
+		if (NiagaraFX) { 
+			//NiagaraFX->DeactivateImmediate();
+			NiagaraFX->SetWorldLocation(PosTemp);
+			NiagaraFX->SetVariableLinearColor(FName("User_EmitterColor"), LinearHSVColor);
+			//NiagaraFX->Activate();
+			//NiagaraFX->SpawnBurstImmediate(500, 1.0f);  // 1 particle, full strength
+		}
+		else { UE_LOG(LogTemp, Error, TEXT("[AAizawaAttractor::OnStepReceived] NiagaraFX NULL")) }
 	}
 
 	void Start() override {

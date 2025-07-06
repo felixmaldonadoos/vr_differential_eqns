@@ -73,7 +73,7 @@ public:
 	virtual void Start() override {
 
 		Super::Start(); // creates modelobj, adds to root, initializes model (only if data is initialized)
-		//InitializeModelData(0.05);
+		InitializeModelData(0.005);
 		UE_LOG(LogTemp, Log, TEXT("[AizawaAttractorModelObj::Start] Start"));
 	};
 };

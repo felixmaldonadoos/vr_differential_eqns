@@ -7,8 +7,12 @@
 #include "DFQModelObject.h"
 #include "ModelData.h"
 #include "SolverInterface.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "SimulationActor.generated.h"
 
+class UNiagaraSystem;
 
 UCLASS()
 class DFQSOLVER_API ASimulationActor : public AActor {
@@ -24,6 +28,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Model")
 	TSubclassOf<UDFQModelObject> ModelObjClass;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VFX")
+	UNiagaraComponent* NiagaraFX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
+	UNiagaraSystem* NiagaraSystemAsset;
+
 	UPROPERTY()
 	TObjectPtr<UDFQModelObject> ModelObj;
 
@@ -37,6 +47,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 	virtual void Start(); 
+
+	virtual void SpawnEmitterFX();
 
 public:	
 	// Called every frame
